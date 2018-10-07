@@ -6,7 +6,7 @@ Created on 06 ‎March ‎2018, ‏‎10:49:57 PM
 
 
 Sheet Location
---
+https://docs.google.com/spreadsheets/d/1BGpGEJDUgfeixOh0EX8Hopq5rBTNAR-Pv7yqVJjRk1Y/edit?usp=sharing
 
 Before Run
 
@@ -22,11 +22,9 @@ import os
 import tkinter.messagebox
 
 from apiclient import discovery
-from oauth2client import client
-from oauth2client import tools
+from oauth2client import client, tools
 from oauth2client.file import Storage
 from googleapiclient import discovery as apiclient
-
 try:
     import argparse
     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
@@ -51,20 +49,30 @@ class GoogleAPI:
     # at ~/.credentials/sheets.googleapis.com-python-quickstart.json
     SCOPES = 'https://www.googleapis.com/auth/spreadsheets'
     CLIENT_SECRET_FILE = 'client_secret.json'
-    APPLICATION_NAME = '' #Name of your application in API
+    APPLICATION_NAME = 'Python'
     credential = []
     sheetId = []
     rangeName = []
     
-    def __init__(self, sheet_id):
-        self.APPLICATION_NAME = 'Python' #Name of your application in API
-        self.sheetId = sheet_id 
-        self.credential = self.get_credentials()
-        self.rangeName = 'Sheet1!A2:E'
+    def __init__(self, sheet_no='1', sheet_range=('A2','E')):
+        self.sheet_url = ''
+        self.sheet_id = ''
+        self.discovery_url = ('https://sheets.googleapis.com/$discovery/rest?version=v4')
+        # self.sheet_id = sheet_id 
+        self.credential = self.__get_credentials()
+        self.rangeName = 'Sheet'+str(sheet_no)+'!'+sheet_range[0]+':'+sheet_range[1]
+        http = self.credential.authorize(httplib2.Http())
 
 
+    def login(self):
+        f = open('url.config', 'r')
+        self.sheet_url = f.read()
+        f.close()
+        f = open('sheet_id.config', 'r')
+        self.sheet_id = f.read()
+        f.close()
 
-    def get_credentials(self):
+    def __get_credentials(self):
         """
         Gets valid user credentials from storage.
     
@@ -97,11 +105,10 @@ class GoogleAPI:
         returns all data contains in speradsheet.
         """
         http = self.credential.authorize(httplib2.Http())
-        discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?'
-                        'version=v4')
-        service = discovery.build('sheets', 'v4', http=http, discoveryServiceUrl=discoveryUrl)
+        service = discovery.build('sheets', 'v4', http=http, discoveryServiceUrl=self.discovery_url)
     
-        result = service.spreadsheets().values().get(spreadsheetId=self.sheetId, range=self.rangeName).execute()
+        result = service.spreadsheets().values().get(
+            spreadsheetId=self.sheet_id, range=self.rangeName).execute()
         values = result.get('values', [])
 
         if not values:
@@ -112,22 +119,20 @@ class GoogleAPI:
                 print(row)
         return values
 
-    def insertRow(self, c1, c2, c3):
+    def insertRow(self, row):
         """
             Insert a row in spreadsheet.
-        """        
+        """
         service = apiclient.build('sheets', 'v4', credentials=self.credential)
-        spreadsheet_id = self.sheetId
+        spreadsheet_id = self.sheet_id
         range_ = self.rangeName
         value_input_option = 'RAW'
         insert_data_option = 'INSERT_ROWS'
         value_range_body = {
           "values": [
-            [
-              c1,
-              c2,
-              c3
-            ]
+            
+              row
+            
           ]
         }
         
@@ -137,16 +142,17 @@ class GoogleAPI:
 def buttonClick():
     """onClickListner for submit button."""
     try:
-        sheet = GoogleAPI('<your API key>')
-        sheet.insertRow(name.get(), rollNo.get(), rate.get())
-    except:  
-        tkinter.messagebox.showerror("Error", "Not Save,, Check your Internet Connection.")
-    tkinter.messagebox.showinfo("Info", "Saved to google sheet")
+        sheet = GoogleAPI()
+        sheet.login()
+        sheet.insertRow([name.get(), rollNo.get(), rate.get()])
+        tkinter.messagebox.showinfo("Info", "Saved to google sheet")
+    except:
+        tkinter.messagebox.showerror("Error", "Not Save,, Check your Internet Connection or API key")
 
 
 
+# UI Part
 win = tkinter.Tk()
-
 
 blue = tkinter.Frame(master=win, height=50, bg='royal blue')
 blue.pack(fill=tkinter.BOTH, expand=1)
@@ -154,7 +160,6 @@ blue.pack(fill=tkinter.BOTH, expand=1)
 win.title("Google form Submision")
 win.geometry("300x300+10+10")
 win.resizable(0, 0)
-
 
 l = tkinter.Label(blue, text="Google form Submision", font=("Helvetica", 16), bg="royal blue", fg="white")
 l.pack()
