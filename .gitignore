@@ -7,6 +7,7 @@ __pycache__/
 *.so
 # Distribution / packaging
 .Python
+secreat/
 env/
 build/
 develop-eggs/
@@ -98,6 +99,3 @@ ENV/
 
 # mypy
 .mypy_cache/
-*.config
-*.json
-url.config
