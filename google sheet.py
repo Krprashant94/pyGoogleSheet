@@ -55,7 +55,7 @@ class GoogleAPI:
     # If modifying these scopes, delete your previously saved credentials
     # at ~/.credentials/sheets.googleapis.com-python-quickstart.json
     SCOPES = 'https://www.googleapis.com/auth/spreadsheets'
-    CLIENT_SECRET_FILE = 'client_secret.json'
+    CLIENT_SECRET_FILE = 'secreat/client_secret.json'
     APPLICATION_NAME = 'Python'
     credential = []
     sheetId = []
@@ -72,10 +72,10 @@ class GoogleAPI:
 
 
     def login(self):
-        f = open('url.config', 'r')
+        f = open('secreat/url.config', 'r')
         self.sheet_url = f.read()
         f.close()
-        f = open('sheet_id.config', 'r')
+        f = open('secreat/sheet_id.config', 'r')
         self.sheet_id = f.read()
         f.close()
 
