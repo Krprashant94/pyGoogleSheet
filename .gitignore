@@ -99,3 +99,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+secreat/sheet_id.config
+secreat/client_secret.json
+secreat/url.config
