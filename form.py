@@ -17,7 +17,7 @@ Before Run
 
 from __future__ import print_function
 import tkinter
-import httplib2
+# import httplib2
 import os
 import tkinter.messagebox
 
