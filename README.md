@@ -1,5 +1,9 @@
 # pyGoogleSheet
-@Author: Prashant Kumar
+### Python Google Sheet Editor
+
+###### Author: Prashant Kumar
+
+[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 
 Python app for submitting data in google sheet
 
