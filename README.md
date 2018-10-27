@@ -15,6 +15,7 @@ Requirmnt
 - *pip install tkinter*
 - *pip install oauth2client*
 
+[![Issues](http://img.shields.io/github/issues/USER/REPO.svg)](https://github.com/Krprashant94/pyGoogleSheet/issues)
 
 
 
